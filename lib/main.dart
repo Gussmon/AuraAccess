@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/presentation/screens/welcome_screen.dart'; // Cambiado aquí
+// 1. Vinculamos la página del Splash usando la ruta correcta
+import 'package:flutter_application_1/pages/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,13 +12,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Aura Access',
+      title: 'AuraAccess',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 30, 86, 56),
+        ),
         useMaterial3: true,
       ),
-      home: const WelcomeScreen(), // Cambiado aquí para que inicie en el Splash
+      // 2. Apuntamos el inicio de la app al Splash
+      home: const SplashScreen(),
     );
   }
 }
