@@ -18,6 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   String? selectedPuerta = 'Puerta 1 (Vehicular)';
   String? selectedTurno = 'Mañana';
 
+  // --- LISTA DE USUARIOS DE PRUEBA (MOCK DB) ---
+  final Map<String, Map<String, String>> _usuariosRegistrados = {
+    'admin': {'pass': '1234', 'rol': 'Administrador'},
+    'edy.winder': {'pass': 'edy123456', 'rol': 'Vigilante'},
+    'juan.perez': {'pass': 'residente78', 'rol': 'Residente'},
+  };
+
   // Variable para ocultar/mostrar contraseña
   bool _obscurePassword = true;
 
@@ -30,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Tomamos el color principal del tema configurado en main.dart
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
@@ -189,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 35),
 
-                // Botón de Ingreso Estilizado
+                // Botón de Ingreso Estilizado con Validación de Credenciales
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
@@ -201,12 +207,51 @@ class _LoginPageState extends State<LoginPage> {
                     elevation: 2,
                   ),
                   onPressed: () {
-                    // Aquí puedes añadir validaciones básicas en el futuro
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            DashboardPage(role: selectedRol ?? 'Usuario'),
+                    final username = _usernameController.text.trim();
+                    final password = _passwordController.text.trim();
+
+                    // 1. Validación: Campos vacíos
+                    if (username.isEmpty || password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Por favor, ingresa tu usuario y contraseña.',
+                          ),
+                          backgroundColor: Colors.orangeAccent,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                      return;
+                    }
+
+                    // 2. Validación: Verificar si el usuario existe en nuestro mapa
+                    if (_usuariosRegistrados.containsKey(username)) {
+                      final datosUsuario = _usuariosRegistrados[username]!;
+
+                      // 3. Validar si la contraseña coincide
+                      if (datosUsuario['pass'] == password) {
+                        // Opcional: Auto-seleccionar el rol del usuario para el Dashboard
+                        final rolFinal =
+                            datosUsuario['rol'] ?? selectedRol ?? 'Usuario';
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DashboardPage(role: rolFinal),
+                          ),
+                        );
+                        return; // Login exitoso, salimos de la función
+                      }
+                    }
+
+                    // 4. Si el usuario no existe o la contraseña falló
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Usuario o contraseña incorrectos. Intenta de nuevo.',
+                        ),
+                        backgroundColor: Colors.redAccent,
+                        behavior: SnackBarBehavior.floating,
                       ),
                     );
                   },
