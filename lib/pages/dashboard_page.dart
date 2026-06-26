@@ -1,9 +1,11 @@
+import 'qr_scanner_page.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart'; // Importamos la página de login para el logout seguro
 import 'visitor_registry_page.dart';
 import 'visitor_list_page.dart';
 import 'staff_control_page.dart';
 import 'reports_page.dart';
+
 
 class DashboardPage extends StatelessWidget {
   final String role;
@@ -110,7 +112,13 @@ class DashboardPage extends StatelessWidget {
           description: 'Validar visitas pre-autorizadas de forma rápida.',
           color: Colors.purple[600]!,
           onTap: () {
-            // Pendiente: Integración de la cámara / QRScanner
+            // Navegación directa hacia el escáner
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const QrScannerPage(),
+              ),
+            );
           },
         ),
         _buildMenuButton(
